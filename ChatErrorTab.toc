@@ -1,0 +1,8 @@
+## Interface: 11200
+## Title: ChatErrorTab
+## Version: 1.0
+## DefaultState: Enabled
+## LoadOnDemand: 0
+## Notes: Redirects Lua errors to a separate chat tab
+
+ChatErrorTab.lua
