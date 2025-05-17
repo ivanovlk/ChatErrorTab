@@ -1,9 +1,8 @@
 local ERROR_CHAT_TAB_NAME = "Lua Errors"
 
-local frame
+local ChatErrorTab --Error Frame
 
 local function Create(frame)
-    frame:Show()
     FCF_DockFrame(frame)
     FCF_SetWindowName(frame, ERROR_CHAT_TAB_NAME)
     FCF_SelectDockFrame(ChatFrame1)
@@ -21,24 +20,27 @@ local function OnEvent()
         local chatFrame = getglobal("ChatFrame"..i)
         local tab = getglobal("ChatFrame"..i.."Tab")
         local name = tab:GetText()
-        -- check if ChatFrame is named "Chat x" (where x is a number)
-        if string.find(name, "^Chat %d+$") then
-            free = chatFrame
-        end
-        if ERROR_CHAT_TAB_NAME == name then
-            found = true
-            frame = chatFrame
-            break
+        if name ~= nil then
+            -- check if ChatFrame is named "Chat x" (where x is a number)
+            if string.find(name, "^Chat %d+$") then
+                free = chatFrame
+            end
+            if ERROR_CHAT_TAB_NAME == name then
+                found = true
+                free = chatFrame
+                break
+            end
         end
     end
 
-    if not found and free then
+    if not found and free then 
         Create(free)
-        frame = free
+        ChatErrorTab = free
     end
 
-    if frame then
-        frame:SetMaxLines(1000)
+    if ChatErrorTab then
+        ChatErrorTab:SetMaxLines(1000)
+        ChatErrorTab:Show()
     end
 
     this:UnregisterEvent("ADDON_LOADED")
@@ -51,8 +53,8 @@ ErrorLogger:SetScript("OnEvent", OnEvent)
 -- Hook the default error handler
 local originalErrorHandler = geterrorhandler()
 seterrorhandler(function(errMsg)
-    if frame then
-        frame:AddMessage("|cffff0000Lua Error: " .. errMsg.."|r")
+    if ChatErrorTab then
+        ChatErrorTab:AddMessage("|cffff0000Lua Error: " .. errMsg.."|r")
     end
     originalErrorHandler(errMsg)
 end)
